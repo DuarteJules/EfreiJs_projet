@@ -1,24 +1,10 @@
-on:
-  push:
-    branches:
-      - main
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: executing test
-        with:
-          script: |
-            cd back
-            npm run dev 
-
-      name: Node.js CI
+name: Node.js CI
 
 on:
   push:
-    branches: - main
+    branches: 
+    - main
 
 jobs:
   build:
