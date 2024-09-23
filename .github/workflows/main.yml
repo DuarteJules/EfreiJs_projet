@@ -22,7 +22,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
-      working-directory: ../../back
+      working-directory: ../back
       
     - run: npm test
-      working-directory: ../../back
+      working-directory: ../back
