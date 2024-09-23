@@ -1,157 +1,99 @@
+<script setup>
+import { onMounted, ref } from 'vue'
+import axiosInstance from "@/helpers/axiosInstance";
+
+const data1 = ref([])
+const name = ref()
+const description = ref()
+const date = ref()
+
+const getData = async () => {
+  await axiosInstance.get('http://localhost:4000/task/getTask').then((res) => {
+    data1.value = JSON.parse(res.data.data);
+  })
+}
+
+const createTask = async () => {
+  await axiosInstance.post("http://localhost:4000/task/createTask",{
+    nom: name.value,
+    description: description.value,
+    creator:'moi',
+    date: date.value,
+  }).then(async (res) => {
+    await getData()
+  })
+}
+onMounted(async()=> {
+  await getData()
+})
+defineProps({
+  msg: String,
+})
+
+const count = ref(0)
+</script>
+
 <template>
-  <v-container class="fill-height">
-    <v-responsive
-      class="align-centerfill-height mx-auto"
-      max-width="900"
-    >
-      <v-img
-        class="mb-4"
-        height="150"
-        src="@/assets/logo.png"
-      />
-
-      <div class="text-center">
-        <div class="text-body-2 font-weight-light mb-n1">Welcome to</div>
-
-        <h1 class="text-h2 font-weight-bold">Vuetify</h1>
-      </div>
-
-      <div class="py-4" />
-
-      <v-row>
-        <v-col cols="12">
-          <v-card
-            class="py-4"
-            color="surface-variant"
-            image="https://cdn.vuetifyjs.com/docs/images/one/create/feature.png"
-            prepend-icon="mdi-rocket-launch-outline"
-            rounded="lg"
-            variant="outlined"
-          >
-            <template #image>
-              <v-img position="top right" />
-            </template>
-
-            <template #title>
-              <h2 class="text-h5 font-weight-bold">Get started</h2>
-            </template>
-
-            <template #subtitle>
-              <div class="text-subtitle-1">
-                Replace this page by removing <v-kbd>{{ `<HelloWorld />` }}</v-kbd> in <v-kbd>pages/index.vue</v-kbd>.
-              </div>
-            </template>
-
-            <v-overlay
-              opacity=".12"
-              scrim="primary"
-              contained
-              model-value
-              persistent
-            />
-          </v-card>
-        </v-col>
-
-        <v-col cols="6">
-          <v-card
-            append-icon="mdi-open-in-new"
-            class="py-4"
-            color="surface-variant"
-            href="https://vuetifyjs.com/"
-            prepend-icon="mdi-text-box-outline"
-            rel="noopener noreferrer"
-            rounded="lg"
-            subtitle="Learn about all things Vuetify in our documentation."
-            target="_blank"
-            title="Documentation"
-            variant="text"
-          >
-            <v-overlay
-              opacity=".06"
-              scrim="primary"
-              contained
-              model-value
-              persistent
-            />
-          </v-card>
-        </v-col>
-
-        <v-col cols="6">
-          <v-card
-            append-icon="mdi-open-in-new"
-            class="py-4"
-            color="surface-variant"
-            href="https://vuetifyjs.com/introduction/why-vuetify/#feature-guides"
-            prepend-icon="mdi-star-circle-outline"
-            rel="noopener noreferrer"
-            rounded="lg"
-            subtitle="Explore available framework Features."
-            target="_blank"
-            title="Features"
-            variant="text"
-          >
-            <v-overlay
-              opacity=".06"
-              scrim="primary"
-              contained
-              model-value
-              persistent
-            />
-          </v-card>
-        </v-col>
-
-        <v-col cols="6">
-          <v-card
-            append-icon="mdi-open-in-new"
-            class="py-4"
-            color="surface-variant"
-            href="https://vuetifyjs.com/components/all"
-            prepend-icon="mdi-widgets-outline"
-            rel="noopener noreferrer"
-            rounded="lg"
-            subtitle="Discover components in the API Explorer."
-            target="_blank"
-            title="Components"
-            variant="text"
-          >
-            <v-overlay
-              opacity=".06"
-              scrim="primary"
-              contained
-              model-value
-              persistent
-            />
-          </v-card>
-        </v-col>
-
-        <v-col cols="6">
-          <v-card
-            append-icon="mdi-open-in-new"
-            class="py-4"
-            color="surface-variant"
-            href="https://discord.vuetifyjs.com"
-            prepend-icon="mdi-account-group-outline"
-            rel="noopener noreferrer"
-            rounded="lg"
-            subtitle="Connect with Vuetify developers."
-            target="_blank"
-            title="Community"
-            variant="text"
-          >
-            <v-overlay
-              opacity=".06"
-              scrim="primary"
-              contained
-              model-value
-              persistent
-            />
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-responsive>
-  </v-container>
+  <div class="container">
+    <div v-for="item in data1" class="items">
+      <span>{{item.name}}</span>
+      <span>{{item.description}}</span>
+      <span>{{item.endDate}}</span>
+    </div>
+  </div>
+  <div class="card">
+    <span>Ajouter nouvelle tâche</span>
+    <div class="input_group">
+      <input type="text" class="input" placeholder="Nom" v-model="name" />
+      <input type="text" class="input" placeholder="Description" v-model="description" />
+      <input type="date" class="input" placeholder="Date" v-model="date"/>
+    </div>
+    <div class="input_group">
+      <button class="input" v-on:click="createTask">Créer</button>
+    </div>
+  </div>
 </template>
 
-<script setup>
-  //
-</script>
+<style scoped>
+
+.container{
+  height: 50%;
+  width: 100%;
+  margin-top: 30px ;
+  display: flex;
+  flex-direction: column;
+  padding: 0.25rem;
+  overflow-y: scroll;
+}
+.items{
+  width: 100%;
+  height: 10%;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  background-color: #505059;
+  border-radius: 0.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.card{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 30%;
+}
+.input{
+  width: 30%;
+  height: 100%;
+  padding: 0 1rem;
+  background-color: #505059;
+}
+.input_group{
+  margin-top:10px;
+  display: flex;
+  height: 23%;
+  width: 100%;
+  justify-content: space-around;
+}
+</style>

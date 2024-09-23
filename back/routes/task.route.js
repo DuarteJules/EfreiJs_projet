@@ -1,35 +1,21 @@
 const express = require( "express" );
 const task = require('../controllers/task.controllers')
+const  security = require('../middleware/security');
 
 module.exports =  (app) => {
-
     const router = express.Router();
 
-    router.get('/', (req, res) => {
-        res.send('yo')
-    })
+    router.get('/getTask', [security.checkAndValidateToken(true)], task.getTasks)
 
-    router.get('/hello', (req, res) => {
-        res.send('Bonjour')
-    })
+    router.get('/getTask/:id', [security.checkAndValidateToken(true)], task.getTaskById)
 
-    router.get('/return-json', (req, res) => {
-        res.send(JSON.stringify({
-            name : "JD"
-        }))
-    })
+    router.get('/getUsers', [security.checkAndValidateToken(true)], task.getUsers)
 
-    router.get('/getTask', [], task.getTasks)
+    router.post('/createTask', [security.checkAndValidateToken(true)], task.addTask)
 
-    router.get('/getTask/:id', [], task.getTaskById)
+    router.post('/deleteTask/:id', [security.checkAndValidateToken(true)], task.removeTask)
 
-    router.get('/getUsers', [], task.getUsers)
-
-    router.post('/createTask', [], task.addTask)
-
-    router.post('/deleteTask/:id', [], task.removeTask)
-
-    router.post('/updateTask/:id',[], task.updateTask)
+    router.post('/updateTask/:id',[security.checkAndValidateToken(true)], task.updateTask)
 
     app.use("/task", router)
 

@@ -8,7 +8,6 @@ exports.addTask = async (req, res) => {
 
     const connection = await db.connect()
     const collection = await connection.db('Task').collection('tasks')
-    console.log(task)
     const result = await collection.insertOne({
         name : task.nom,
         creator : task.creator,
@@ -19,11 +18,11 @@ exports.addTask = async (req, res) => {
     res.status(200).send(JSON.stringify({result: 'ok', id: result.insertedId}))
 
 }
-exports.removeTask = (req, res) => {
+exports.removeTask = (req, res, tasks) => {
     tasks = tasks.filter(task => task.id !== parseInt(req.params.id))
 
     res.status(200).send(JSON.stringify({result: 'ok'}))
-
+    return tasks
 }
 exports.updateTask = async (req, res) => {
     let json_data = req.body
@@ -49,6 +48,7 @@ exports.getTasks = async (req, res) => {
     const connection = await db.connect()
     const collection = await connection.db('Task').collection('tasks')
     const result = await collection.find({}).toArray()
+    console.log(result)
 
     res.status(200).send(JSON.stringify({result: 'ok', data: JSON.stringify(result)}))
 }
