@@ -12,4 +12,4 @@ jobs:
         with:
           script: |
             cd back
-            npm run dev
+            npm run dev 
